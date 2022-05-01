@@ -1,0 +1,72 @@
+#include<LiquidCrystal.h>
+const int rs = 12 , en = 11 , d4 = 10 , d5 = 9 , d6 = 8 , d7 = 7 ;
+LiquidCrystal lcd(rs, en , d4 , d5 , d6 , d7);
+int ir1=2 ;
+int ir2 = 3 ;
+int ir1_val;
+int ir2_val;
+int motor_IN1=4 ;
+int motor_IN2=5 ;
+int echo_pin=13;
+int trg_pin=6;
+long time_dura;
+int dist;
+
+void setup () {
+pinMode(2,INPUT);
+pinMode(3,INPUT);
+pinMode(4,INPUT);
+pinMode(5,INPUT);
+pinMode(trg_pin,OUTPUT);
+pinMode(echo_pin,INPUT);
+Serial.begin(9600);
+lcd.begin(16,2);
+lcd.setCursor(0,0);
+lcd.print("RAILWAY GATE");
+lcd.setCursor(0,1);
+lcd.print(" CONTROLLER ");
+delay(1000);
+}
+
+void loop()
+{ 
+  // ir sensor
+  ir1_val=digitalRead(ir1);
+  ir2_val=digitalRead(ir2);
+  if(ir1_val==1)
+  {
+    digitalWrite(motor_IN1,HIGH);
+    digitalWrite(motor_IN2,LOW);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("GATE CLOSE");
+    delay(500);
+    }
+   else if(ir2_val==1){
+    digitalWrite(motor_IN1,HIGH);
+    digitalWrite(motor_IN2,LOW);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("GATE OPEN");
+    delay(500);
+   }
+   else{
+    digitalWrite(motor_IN1,LOW);
+    digitalWrite(motor_IN2,LOW);
+   }
+
+   //ultrasonic
+   digitalWrite(trg_pin,LOW);
+   delay(20);
+   
+   digitalWrite(trg_pin,HIGH);
+   delay(200);
+   digitalWrite(trg_pin,LOW);
+
+   
+   time_dura=pulseIn(echo_pin,HIGH);
+   dist=time_dura*0.035/2;
+
+   Serial.print("Distance: ");
+   Serial.println(dist);
+  }
